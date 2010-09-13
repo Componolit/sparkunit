@@ -20,7 +20,8 @@ is
    --# derives
    --#    Harness from Description;
    --# pre
-   --#    Harness'Last       >  Harness'First and
+   --#    Harness'Last       >  Harness'First     and
+   --#    Description'Last   >  Description'First and
    --#    Description'Length <= String_Length;
 
    -- function Create_Suite
