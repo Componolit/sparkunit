@@ -38,13 +38,13 @@ is
        Description : in     String)
    is
    begin
-      for I in Natural range Harness'First + 1 .. Harness'Last
+      for I in Natural range Harness'Range
       loop
          --# accept Flow, 20, Harness, "Why is access to 'First illegal here?";
          if I = Harness'First
          then
             --# accept Flow, 23, Harness, "Initialized in complete loop";
-            Harness (I) := Test_Type' (Description => Copy (Description));
+            Harness (I) := Test_Type'(Description => Copy (Description));
          else
             --# accept Flow, 23, Harness, "Initialized in complete loop";
             Harness (I) := Null_Test;
