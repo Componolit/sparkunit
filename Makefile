@@ -50,24 +50,26 @@ endif
 
 all:   $(ALL_GOALS)
 build: $(BUILD_DIR)/libsparkunit.a
-proof: $(PROOF_DIR)/libsparkcrypto.sum
+proof: $(PROOF_DIR)/sparkunit.sum
 
 $(OUTPUT_DIR)/sparkunit.idx: src/*.ad?
 	sparkmake $(SPARKMAKE_OPTS) -index=$@ -nometa
 
-$(OUTPUT_DIR)/sparkunit.sum: $(OUTPUT_DIR)/sparkunit.idx $(TARGET_CFG) src/*.ad?
+$(PROOF_DIR)/sparkunit.sum: $(OUTPUT_DIR)/sparkunit.idx $(TARGET_CFG) src/*.ad?
 	spark $(SPARK_OPTS) -index=$< src/sparkunit.ads src/sparkunit.adb
-	sparksimp
-	pogs -o=$@
+	(cd $(PROOF_DIR) && sparksimp -t -p=5 -sargs -norenum)
+	pogs -d=$(PROOF_DIR) -o=$@
+	@tail -n14 $@ | head -n13
+	@echo
 
 $(BUILD_DIR)/libsparkunit.a:
-	gnatmake \
-		$(GNATMAKE_OPTS) \
-		-p -P build/build_sparkunit
+	gnatmake $(GNATMAKE_OPTS) -p -P build/build_sparkunit
 
 install: build
-	install -p -m 644 $(BUILD_DIR)/libsparkunit.a $(DESTDIR)/adalib/libsparkunit.a
-	install -p -m 644 $(SRC_DIR)/*.ad? $(DESTDIR)/adainclude/
+	install -d -m 755 $(DESTDIR)/adalib $(DESTDIR)/adainclude
+	install -p -m 644 $(BUILD_DIR)/adalib/libsparkunit.a $(BUILD_DIR)/adalib/*.ali $(DESTDIR)/adalib/
+	install -p -m 644 src/*.ads $(DESTDIR)/adainclude/
+	install -p -m 644 build/sparkunit.gpr $(DESTDIR)/
 
 install_local: DESTDIR = $(OUTPUT_DIR)/sparkunit
 install_local: install
