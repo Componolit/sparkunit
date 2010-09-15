@@ -17,8 +17,15 @@ SPARK_OPTS = \
 		-vcg \
       -nosli \
 		-warn=warnings.conf \
-		-index=$(OUTPUT_DIR)/global.idx \
+		-index=$(OUTPUT_DIR)/spark.idx \
       -output_dir=$(OUTPUT_DIR)/proof
+
+SPARKMAKE_OPTS = \
+      -nometa \
+      -duplicates_are_errors \
+      -index=$(OUTPUT_DIR)/spark.idx \
+      -dir=$(SPARK_DIR)/lib/spark \
+      -dir=$(SPARKUNIT_DIR)
 
 GOALS = $(OUTPUT_DIR)/main
 
@@ -27,17 +34,12 @@ GOALS += $(OUTPUT_DIR)/main.sum
 endif
 
 all: $(GOALS)
-
-install: all
-	install -D -m 755 $(OUTPUT_DIR)/main $(DESTDIR)/main
-ifeq ($(NO_PROOF),)
-	install -D -m 644 $(OUTPUT_DIR)/main.sum $(DESTDIR)/main.sum
-endif
+	$(OUTPUT_DIR)/main
 
 $(OUTPUT_DIR)/main:
-	gnatmake -aP$(LSC_DIR) -o main -P build.gpr
+	gnatmake -aP$(SPARKUNIT_DIR) main -P build.gpr
 
-$(OUTPUT_DIR)/main.sum: $(OUTPUT_DIR)/target.cfg $(OUTPUT_DIR)/global.idx $(OUTPUT_DIR)/spark.idx $(OUTPUT_DIR)/spark.smf
+$(OUTPUT_DIR)/main.sum: $(OUTPUT_DIR)/target.cfg $(OUTPUT_DIR)/spark.idx $(OUTPUT_DIR)/spark.smf
 	spark -config=$< $(SPARK_OPTS) main.adb
 	(cd $(OUTPUT_DIR) && sparksimp -t -p=5)
 	pogs -o=$@
@@ -45,10 +47,7 @@ $(OUTPUT_DIR)/main.sum: $(OUTPUT_DIR)/target.cfg $(OUTPUT_DIR)/global.idx $(OUTP
 	@echo
 
 $(OUTPUT_DIR)/spark.idx $(OUTPUT_DIR)/spark.smf:
-	sparkmake -nometa -duplicates_are_errors -index=$(OUTPUT_DIR)/spark.idx
-
-$(OUTPUT_DIR)/global.idx: $(OUTPUT_DIR)/spark.idx
-	@cat $(LSC_DIR)/libsparkcrypto.idx $< > $@
+	sparkmake $(SPARKMAKE_OPTS)
 
 $(OUTPUT_DIR)/confgen: $(SPARK_DIR)/lib/spark/confgen.adb
 	gnatmake -D $(OUTPUT_DIR) -o $@ $^

@@ -32,13 +32,13 @@ endif
 
 # Feature: NO_PROOF
 ifeq ($(NO_PROOF),)
-ALL_GOALS += proof
+ALL_GOALS    += proof
 INSTALL_DEPS += install_proof
 endif
 
 # Feature: NO_TESTS
 ifeq ($(NO_TESTS),)
-ALL_GOALS += tests
+ALL_GOALS += test
 endif
 
 # Feature: NO_APIDOC
@@ -64,6 +64,9 @@ $(PROOF_DIR)/sparkunit.sum: $(OUTPUT_DIR)/sparkunit.idx $(TARGET_CFG) src/*.ad?
 
 $(BUILD_DIR)/libsparkunit.a:
 	gnatmake $(GNATMAKE_OPTS) -p -P build/build_sparkunit
+
+test: install_local
+	$(MAKE) SPARKUNIT_DIR=$(OUTPUT_DIR)/sparkunit -C tests
 
 install: build
 	install -d -m 755 $(DESTDIR)/adalib $(DESTDIR)/adainclude
