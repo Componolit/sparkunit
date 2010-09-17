@@ -23,8 +23,6 @@ SPARK_OPTS = \
 SPARKMAKE_OPTS = \
    -dir=$(SPARK_DIR)/lib/spark
 
-ALL_GOALS = install_local
-
 # SPARK_DIR must be set
 ifeq ($(SPARK_DIR),)
 $(error SPARK_DIR not defined)
@@ -45,6 +43,9 @@ endif
 ifeq ($(NO_APIDOC),)
 ALL_GOALS += apidoc
 endif
+
+ALL_GOALS += install_local
+
 
 ###############################################################################
 
