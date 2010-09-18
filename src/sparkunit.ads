@@ -5,7 +5,10 @@ package SPARKUnit
 is
 
    -- Type representing a harness, test suite or unit test
-   type Test_Type is private;
+   type Test_Type is limited private;
+
+   -- Index to a harness, test suite or unit test
+   type Index_Type is limited private;
 
    -- A test harness
    type Harness_Type is array (Natural range <>) of Test_Type;
@@ -24,15 +27,30 @@ is
    --#    Description'Last   >  Description'First and
    --#    Description'Length <= String_Length;
 
-   -- function Create_Suite
-   --    (Harness     : in out Harness_Type;
-   --     Description : in     String) return Suite_Type;
+   --  Create and return a test suite in @Harness@ using @Description@
+   procedure Create_Suite
+      (Harness     : in out Harness_Type;
+       Description : in     String;
+       Suite       :    out Index_Type);
+   --# derives
+   --#    Harness from Harness, Description &
+   --#    Suite   from Harness;
+   --# pre
+   --#    Harness'Last       >  Harness'First     and
+   --#    Description'Last   >  Description'First and
+   --#    Description'Length <= String_Length;
 
-   -- procedure Test
-   --    (Harness     : in out Context_Type;
-   --     Suite       : in     Suite_Type;
-   --     Description : in     String;
-   --     Success     : in     Boolean);
+   procedure Test
+      (Harness     : in out Harness_Type;
+       Suite       : in     Index_Type;
+       Description : in     String;
+       Success     : in     Boolean);
+   --# derives
+   --#    Harness from Harness, Suite, Description, Success;
+   --# pre
+   --#    Harness'Last       >  Harness'First     and
+   --#    Description'Last   >  Description'First and
+   --#    Description'Length <= String_Length;
 
    -- Output the test report of @Harness@ in text format
    procedure Text_Report
@@ -60,13 +78,28 @@ private
       (Data   => Null_String_Data,
        Length => 0);
 
+   type Kind_Type  is (Invalid, Harness_Kind, Suite_Kind, Test_Kind);
+
+   type Index_Type is
+   record
+      Position : Natural;
+   end record;
+
+   Null_Index : constant Index_Type := Index_Type'(Position => 0);
+
    type Test_Type is
    record
-      Description : String_Type;
+      Description  : String_Type;
+      Next         : Index_Type;
+      Kind         : Kind_Type;
+      Success      : Boolean;
    end record;
 
    Null_Test : constant Test_Type := Test_Type'
-      (Description => Null_String);
+      (Description => Null_String,
+       Next        => Null_Index,
+       Kind        => Invalid,
+       Success     => False);
 
 --# accept Warning, 394, Test_Type, "Initialized indirectly via Test procedure";
 end SPARKUnit;
