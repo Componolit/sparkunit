@@ -183,7 +183,9 @@ is
    procedure Text_Report
       (Harness : in Harness_Type)
    is
-      Temp : Element_Type;
+      Temp    : Element_Type;
+      No_Test : Natural := 0;
+      No_Fail : Natural := 0;
    begin
 
       if Failure (Harness) then
@@ -200,6 +202,7 @@ is
                when Harness_Kind =>
                   null;
                when Suite_Kind =>
+                  Spark_IO.New_Line (Spark_IO.Standard_Output, 1);
                   Spark_IO.Put_String (Spark_IO.Standard_Output, "   ", 0);
                when Test_Kind =>
                   Spark_IO.Put_String (Spark_IO.Standard_Output, "      ", 0);
@@ -211,9 +214,19 @@ is
                 Stop => Temp.Data.Description.Length);
 
             if Temp.Data.Kind = Test_Kind then
+
+               No_Test := No_Test + 1;
+
+               Spark_IO.Put_Char (Spark_IO.Standard_Output, ' ');
+               for I in Natural range 1 .. String_Length - Temp.Data.Description.Length
+               loop
+                  Spark_IO.Put_Char (Spark_IO.Standard_Output, '.');
+               end loop;
+
                if Temp.Data.Success then
-                  Spark_IO.Put_String (Spark_IO.Standard_Output, " OK.", 0);
+                  Spark_IO.Put_String (Spark_IO.Standard_Output, ".... OK.", 0);
                else
+                  No_Fail := No_Fail + 1;
                   Spark_IO.Put_String (Spark_IO.Standard_Output, " FAILED!", 0);
                end if;
             end if;
@@ -223,6 +236,14 @@ is
             exit when Temp.Next.Position = Harness'First;
             Temp := Harness (Temp.Next.Position);
          end loop;
+
+         Spark_IO.New_Line (Spark_IO.Standard_Output, 1);
+         Spark_IO.Put_String (Spark_IO.Standard_Output, "FAILED: ", 0);
+         Spark_IO.Put_Integer (Spark_IO.Standard_Output, No_Fail, 4, 10);
+         Spark_IO.Put_String (Spark_IO.Standard_Output, " /", 0);
+         Spark_IO.Put_Integer (Spark_IO.Standard_Output, No_Test, 4, 10);
+         Spark_IO.New_Line (Spark_IO.Standard_Output, 1);
+
       end if;
 
    end Text_Report;
