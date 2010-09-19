@@ -33,28 +33,109 @@ is
 
    ----------------------------------------------------------------------------
 
-   procedure Initialize
-      (Harness     :    out Harness_Type;
-       Description : in     String)
+   procedure Initialize (Harness : out Harness_Type)
+   --# derives
+   --#   Harness from ;
    is
    begin
       for I in Natural range Harness'Range
       loop
-         --# accept Flow, 20, Harness, "Why is access to 'First illegal here?";
-         if I = Harness'First
-         then
-            --# accept Flow, 23, Harness, "Initialized in complete loop";
-            Harness (I) := Test_Type'(Description => Copy (Description),
-                                      Next        => Null_Index,
-                                      Kind        => Harness_Kind,
-                                      Success     => True);
-         else
-            --# accept Flow, 23, Harness, "Initialized in complete loop";
-            Harness (I) := Null_Test;
-         end if;
+         --# accept Flow, 23, Harness, "Initialized in complete loop";
+         Harness (I) := Element_Type'
+            (Valid => False,
+             Next  => Index_Type'(Position => I),
+             Data  => Null_Test);
       end loop;
       --# accept Flow, 602, Harness, Harness, "Initialized in complete loop";
    end Initialize;
+
+   ----------------------------------------------------------------------------
+
+   function Failure
+      (Harness : in Harness_Type) return Boolean
+   --# return
+   --#    not Harness (Harness'First).Valid;
+   is
+   begin
+      return not Harness (Harness'First).Valid;
+   end Failure;
+
+   ----------------------------------------------------------------------------
+
+   procedure Allocate
+      (Harness       : in out Harness_Type;
+       Position      :    out Index_Type)
+   --# derives
+   --#    Position, Harness from Harness;
+   --# post
+   --#    Position.Position in Harness'Range;
+   is
+      Found : Boolean := False;
+   begin
+      Position := Index_Type'(Position => Harness'First);
+
+      for I in Natural range Harness'First .. Harness'Last
+      --# assert not Found;
+      loop
+         if not Harness (I).Valid then
+            Position          := Index_Type'(Position => I);
+            Harness (I).Valid := True;
+            Found             := True;
+
+            --# check Position.Position in Harness'Range;
+            exit;
+         end if;
+      end loop;
+
+      if not Found then
+         Position := Index_Type'(Position => Harness'First);
+         Harness (Harness'First).Valid := False;
+         --# check Position.Position in Harness'Range;
+      end if;
+
+   end Allocate;
+
+   ----------------------------------------------------------------------------
+
+   procedure Insert_After
+      (Harness  : in out Harness_Type;
+       Previous : in     Index_Type;
+       Current  :    out Index_Type;
+       Data     : in     Test_Type)
+   --# derives
+   --#    Harness from Harness, Data, Previous &
+   --#    Current from Harness;
+   is
+   begin
+
+      Allocate
+         (Harness  => Harness,
+          Position => Current);
+
+      if not Failure (Harness) and Previous.Position in Harness'Range then
+         Harness (Current.Position).Next  := Harness (Previous.Position).Next;
+         Harness (Current.Position).Data  := Data;
+         Harness (Previous.Position).Next := Current;
+      end if;
+
+   end Insert_After;
+
+   ----------------------------------------------------------------------------
+
+   procedure Create_Harness
+      (Harness     :    out Harness_Type;
+       Description : in     String)
+   is
+   begin
+      Initialize (Harness);
+
+      Harness (Harness'First).Valid := True;
+      Harness (Harness'First).Data  :=
+          Test_Type'(Description => Copy (Description),
+                     Kind        => Harness_Kind,
+                     Success     => True);
+
+   end Create_Harness;
 
    ----------------------------------------------------------------------------
 
@@ -63,71 +144,86 @@ is
        Description : in     String;
        Suite       :    out Index_Type)
    is
-      Next : Natural;
    begin
 
-      Next := Harness (Harness'First).Next.Position;
-
-      if Next >= Harness'First and Next < Harness'Last
-      then
-         Harness (Next) := Test_Type'(Description => Copy (Description),
-                                      Kind        => Suite_Kind,
-                                      Next        => Null_Index,
-                                      Success     => True);
-
-         Suite := Index_Type'(Position => Next + 1);
-         Harness (Harness'First).Next.Position := Next + 1;
-      else
-         Suite := Index_Type'(Position => Harness'First);
-         Harness (Harness'First).Success := False;
-      end if;
-
+      Insert_After
+         (Harness  => Harness,
+          Previous => Index_Type'(Position => Harness'First),
+          Current  => Suite,
+          Data     => Test_Type'(Description => Copy (Description),
+                                 Kind        => Suite_Kind,
+                                 Success     => True));
    end Create_Suite;
 
    ----------------------------------------------------------------------------
 
-   procedure Test
+   procedure Create_Test
       (Harness     : in out Harness_Type;
        Suite       : in     Index_Type;
        Description : in     String;
        Success     : in     Boolean)
    is
-      Next : Natural;
+      Dummy : Index_Type;
    begin
 
-      Next := Harness (Harness'First).Next.Position;
+      --# accept Flow, 10, Dummy, "Unused";
+      Insert_After
+         (Harness  => Harness,
+          Previous => Suite,
+          Current  => Dummy,
+          Data     => Test_Type'(Description => Copy (Description),
+                                 Kind        => Test_Kind,
+                                 Success     => Success));
 
-      if Next >= Harness'First and Next < Harness'Last and
-         Suite.Position in Harness'Range
-      then
-         Harness (Next) :=
-            Test_Type'(Description => Copy (Description),
-                       Kind        => Test_Kind,
-                       Next        => Index_Type'(Position => Next),
-                       Success     => Success);
-
-         Harness (Suite.Position).Next := Index_Type'(Position => Next);
-         Harness (Harness'First).Next  := Index_Type'(Position => Next + 1);
-      else
-         Harness (Harness'First).Success := False;
-      end if;
-
-   end Test;
+   --# accept Flow, 33, Dummy, "Unused";
+   end Create_Test;
 
    ----------------------------------------------------------------------------
 
    procedure Text_Report
       (Harness : in Harness_Type)
    is
-      Temp : Test_Type;
+      Temp : Element_Type;
    begin
 
-      Temp := Harness (Harness'First);
+      if Failure (Harness) then
+         Spark_IO.Put_Line
+            (File => Spark_IO.Standard_Output,
+             Item => "Harness failed - check memory!",
+             Stop => 0);
+      else
+         Temp := Harness (Harness'First);
+         loop
+            case Temp.Data.Kind is
+               when Invalid =>
+                  Spark_IO.Put_String (Spark_IO.Standard_Output, "ERROR: Invalid kind", 0);
+               when Harness_Kind =>
+                  null;
+               when Suite_Kind =>
+                  Spark_IO.Put_String (Spark_IO.Standard_Output, "   ", 0);
+               when Test_Kind =>
+                  Spark_IO.Put_String (Spark_IO.Standard_Output, "      ", 0);
+            end case;
 
-      Spark_IO.Put_Line
-         (File => Spark_IO.Standard_Output,
-          Item => Temp.Description.Data,
-          Stop => Temp.Description.Length);
+            Spark_IO.Put_String
+               (File => Spark_IO.Standard_Output,
+                Item => Temp.Data.Description.Data,
+                Stop => Temp.Data.Description.Length);
+
+            if Temp.Data.Kind = Test_Kind then
+               if Temp.Data.Success then
+                  Spark_IO.Put_String (Spark_IO.Standard_Output, " OK.", 0);
+               else
+                  Spark_IO.Put_String (Spark_IO.Standard_Output, " FAILED!", 0);
+               end if;
+            end if;
+
+            Spark_IO.New_Line (Spark_IO.Standard_Output, 1);
+
+            exit when Temp.Next.Position = Harness'First;
+            Temp := Harness (Temp.Next.Position);
+         end loop;
+      end if;
 
    end Text_Report;
 

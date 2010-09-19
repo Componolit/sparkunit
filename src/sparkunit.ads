@@ -5,19 +5,19 @@ package SPARKUnit
 is
 
    -- Type representing a harness, test suite or unit test
-   type Test_Type is limited private;
+   type Element_Type is limited private;
 
    -- Index to a harness, test suite or unit test
    type Index_Type is limited private;
 
    -- A test harness
-   type Harness_Type is array (Natural range <>) of Test_Type;
+   type Harness_Type is array (Natural range <>) of Element_Type;
 
    -- Maximum length of strings passed to SPARKUnit
    String_Length : constant := 30;
 
-   -- Initialize the given harness @Harness@ using @Description@
-   procedure Initialize
+   -- Create the given @Harness@ using @Description@
+   procedure Create_Harness
       (Harness     :    out Harness_Type;
        Description : in     String);
    --# derives
@@ -40,7 +40,10 @@ is
    --#    Description'Last   >  Description'First and
    --#    Description'Length <= String_Length;
 
-   procedure Test
+   --  Insert test case with result @Success@ as child of @Suite@ in @Harness@.
+   --  Use @Description@ for the case.
+
+   procedure Create_Test
       (Harness     : in out Harness_Type;
        Suite       : in     Index_Type;
        Description : in     String;
@@ -90,16 +93,21 @@ private
    type Test_Type is
    record
       Description  : String_Type;
-      Next         : Index_Type;
       Kind         : Kind_Type;
       Success      : Boolean;
    end record;
 
    Null_Test : constant Test_Type := Test_Type'
       (Description => Null_String,
-       Next        => Null_Index,
        Kind        => Invalid,
        Success     => False);
 
---# accept Warning, 394, Test_Type, "Initialized indirectly via Test procedure";
+   type Element_Type is
+   record
+      Valid : Boolean;
+      Next  : Index_Type;
+      Data  : Test_Type;
+   end record;
+
+--# accept Warning, 394, Element_Type, "Initialized indirectly via Test procedure";
 end SPARKUnit;
