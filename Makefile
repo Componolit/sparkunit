@@ -94,6 +94,7 @@ apidoc: $(ADT_FILES)
 	install -m 644 doc/apidoc.css $(DOC_DIR)/
 
 clean:
+	$(MAKE) -C tests clean
 	rm -rf $(PROOF_DIR) $(TREE_DIR) $(OUTPUT_DIR)
 
 .PHONY: clean apidoc all install build install_local
