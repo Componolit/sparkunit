@@ -180,12 +180,61 @@ is
 
    ----------------------------------------------------------------------------
 
+   procedure Indent (Kind : Kind_Type)
+   --# global
+   --#    Spark_IO.Outputs;
+   --# derives
+   --#    Spark_IO.Outputs from *, Kind;
+   is
+   begin
+      case Kind is
+         when Invalid =>
+            Spark_IO.Put_String (Spark_IO.Standard_Output, "ERROR: Invalid kind", 0);
+         when Harness_Kind =>
+            null;
+         when Suite_Kind =>
+            Spark_IO.New_Line (Spark_IO.Standard_Output, 1);
+            Spark_IO.Put_String (Spark_IO.Standard_Output, "   ", 0);
+         when Test_Kind =>
+            Spark_IO.Put_String (Spark_IO.Standard_Output, "      ", 0);
+      end case;
+   end Indent;
+
+   ----------------------------------------------------------------------------
+
+   procedure Print_Result (Item : Test_Type)
+   --# global
+   --#    Spark_IO.Outputs;
+   --# derives
+   --#    Spark_IO.Outputs from *, Item;
+   --# pre
+   --#    String_Length - Item.Description.Length <= Natural'Last;
+   is
+   begin
+
+      Spark_IO.Put_Char (Spark_IO.Standard_Output, ' ');
+      for I in Natural range 1 .. String_Length - Item.Description.Length
+      loop
+         Spark_IO.Put_Char (Spark_IO.Standard_Output, '.');
+      end loop;
+
+      if Item.Success then
+         Spark_IO.Put_String (Spark_IO.Standard_Output, ".... OK.", 0);
+      else
+         Spark_IO.Put_String (Spark_IO.Standard_Output, " FAILED!", 0);
+      end if;
+
+   end Print_Result;
+
+   ----------------------------------------------------------------------------
+
    procedure Text_Report
       (Harness : in Harness_Type)
    is
       Temp    : Element_Type;
       No_Test : Natural := 0;
       No_Fail : Natural := 0;
+
    begin
 
       if Failure (Harness) then
@@ -194,46 +243,34 @@ is
              Item => "Harness failed - check memory!",
              Stop => 0);
       else
+
          Temp := Harness (Harness'First);
+
          loop
-            case Temp.Data.Kind is
-               when Invalid =>
-                  Spark_IO.Put_String (Spark_IO.Standard_Output, "ERROR: Invalid kind", 0);
-               when Harness_Kind =>
-                  null;
-               when Suite_Kind =>
-                  Spark_IO.New_Line (Spark_IO.Standard_Output, 1);
-                  Spark_IO.Put_String (Spark_IO.Standard_Output, "   ", 0);
-               when Test_Kind =>
-                  Spark_IO.Put_String (Spark_IO.Standard_Output, "      ", 0);
-            end case;
+            Indent (Temp.Data.Kind);
 
             Spark_IO.Put_String
                (File => Spark_IO.Standard_Output,
                 Item => Temp.Data.Description.Data,
                 Stop => Temp.Data.Description.Length);
 
-            if Temp.Data.Kind = Test_Kind then
-
+            if Temp.Data.Kind = Test_Kind and
+               No_Test < Natural'Last     and
+               No_Fail < Natural'Last
+            then
                No_Test := No_Test + 1;
-
-               Spark_IO.Put_Char (Spark_IO.Standard_Output, ' ');
-               for I in Natural range 1 .. String_Length - Temp.Data.Description.Length
-               loop
-                  Spark_IO.Put_Char (Spark_IO.Standard_Output, '.');
-               end loop;
-
-               if Temp.Data.Success then
-                  Spark_IO.Put_String (Spark_IO.Standard_Output, ".... OK.", 0);
-               else
+               if not Temp.Data.Success then
                   No_Fail := No_Fail + 1;
-                  Spark_IO.Put_String (Spark_IO.Standard_Output, " FAILED!", 0);
                end if;
+
+               Print_Result (Temp.Data);
             end if;
 
             Spark_IO.New_Line (Spark_IO.Standard_Output, 1);
 
-            exit when Temp.Next.Position = Harness'First;
+            exit when Temp.Next.Position = Harness'First or
+                      not (Temp.Next.Position in Harness'Range);
+
             Temp := Harness (Temp.Next.Position);
          end loop;
 
