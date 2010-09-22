@@ -234,6 +234,7 @@ is
       Temp    : Element_Type;
       No_Test : Natural := 0;
       No_Fail : Natural := 0;
+      Error   : Boolean := False;
 
    begin
 
@@ -254,24 +255,35 @@ is
                 Item => Temp.Data.Description.Data,
                 Stop => Temp.Data.Description.Length);
 
-            if Temp.Data.Kind = Test_Kind and
-               No_Test < Natural'Last     and
-               No_Fail < Natural'Last
-            then
-               No_Test := No_Test + 1;
-               if not Temp.Data.Success then
-                  No_Fail := No_Fail + 1;
-               end if;
+            if Temp.Data.Kind = Test_Kind then
 
-               Print_Result (Temp.Data);
+               if    not (No_Test < Natural'Last) then
+                  Spark_IO.Put_String (Spark_IO.Standard_Output, " NO_TEST OVERFLOW!!!", 0);
+                  Error := True;
+               elsif not (No_Fail < Natural'Last) then
+                  Spark_IO.Put_String (Spark_IO.Standard_Output, " NO_FAIL OVERFLOW!!!", 0);
+                  Error := True;
+               else
+                  No_Test := No_Test + 1;
+                  if not Temp.Data.Success then
+                     No_Fail := No_Fail + 1;
+                  end if;
+                  Print_Result (Temp.Data);
+               end if;
+            end if;
+
+            if not (Temp.Next.Position in Harness'Range)
+            then
+               Spark_IO.Put_String (Spark_IO.Standard_Output, "INVALID NEXT ELEMENT!!!", 0);
+               Error := True;
             end if;
 
             Spark_IO.New_Line (Spark_IO.Standard_Output, 1);
 
-            exit when Temp.Next.Position = Harness'First or
-                      not (Temp.Next.Position in Harness'Range);
+            exit when Error or Temp.Next.Position = Harness'First;
 
             Temp := Harness (Temp.Next.Position);
+
          end loop;
 
          Spark_IO.New_Line (Spark_IO.Standard_Output, 1);
