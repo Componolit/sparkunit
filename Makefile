@@ -21,6 +21,8 @@ SPARK_OPTS = \
    -output_directory=$(PROOF_DIR)
 
 SPARKMAKE_OPTS = \
+   -include=\*.shs \
+   -include=\*.ad[sb] \
    -dir=$(SPARK_DIR)/lib/spark
 
 # SPARK_DIR must be set
@@ -73,6 +75,7 @@ install: build
 	install -d -m 755 $(DESTDIR)/adalib $(DESTDIR)/adainclude
 	install -p -m 644 $(BUILD_DIR)/adalib/libsparkunit.a $(BUILD_DIR)/adalib/*.ali $(DESTDIR)/adalib/
 	install -p -m 644 src/*.ads $(DESTDIR)/adainclude/
+	install -p -m 644 src/*.shs $(DESTDIR)/adainclude/
 	install -p -m 644 build/sparkunit.gpr $(DESTDIR)/
 
 install_local: DESTDIR = $(OUTPUT_DIR)/sparkunit

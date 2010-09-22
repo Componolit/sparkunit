@@ -1,4 +1,5 @@
 --# inherit
+--#    Ada.Command_Line,
 --#    Spark_IO;
 
 package SPARKUnit

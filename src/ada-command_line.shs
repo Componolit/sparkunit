@@ -1,0 +1,9 @@
+package Ada.Command_Line is
+
+   subtype Exit_Status is Integer;
+
+   procedure Set_Exit_Status (Code : Exit_Status);
+   --# derives
+   --#    null from Code;
+
+end Ada.Command_Line;

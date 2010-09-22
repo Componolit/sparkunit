@@ -1,4 +1,5 @@
 with Spark_IO;
+with Ada.Command_Line;
 
 package body SPARKUnit
 is
@@ -235,14 +236,13 @@ is
       No_Test : Natural := 0;
       No_Fail : Natural := 0;
       Error   : Boolean := False;
+      Status  : Ada.Command_Line.Exit_Status;
 
    begin
 
       if Failure (Harness) then
-         Spark_IO.Put_Line
-            (File => Spark_IO.Standard_Output,
-             Item => "Harness failed - check memory!",
-             Stop => 0);
+         Spark_IO.Put_Line (Spark_IO.Standard_Output, "OUT OF MEMORY!!!", 0);
+         Error := True;
       else
 
          Temp := Harness (Harness'First);
@@ -294,6 +294,16 @@ is
          Spark_IO.New_Line (Spark_IO.Standard_Output, 1);
 
       end if;
+
+      if No_Fail > 0 then
+         Status := 2;
+      elsif Error then
+         Status := 1;
+      else
+         Status := 0;
+      end if;
+
+      Ada.Command_Line.Set_Exit_Status (Status);
 
    end Text_Report;
 

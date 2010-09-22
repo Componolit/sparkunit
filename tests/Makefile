@@ -21,6 +21,8 @@ SPARK_OPTS = \
       -output_dir=$(OUTPUT_DIR)/proof
 
 SPARKMAKE_OPTS = \
+      -include=\*.shs \
+      -include=\*.ad[sb] \
       -nometa \
       -duplicates_are_errors \
       -index=$(OUTPUT_DIR)/spark.idx \
@@ -34,7 +36,7 @@ GOALS += $(OUTPUT_DIR)/main.sum
 endif
 
 all: $(GOALS)
-	$(OUTPUT_DIR)/main
+	-$(OUTPUT_DIR)/main
 
 $(OUTPUT_DIR)/main:
 	gnatmake -aP$(SPARKUNIT_DIR) main -P build.gpr
