@@ -76,7 +76,7 @@ install: build
 	install -p -m 644 $(BUILD_DIR)/adalib/libsparkunit.a $(BUILD_DIR)/adalib/*.ali $(DESTDIR)/adalib/
 	install -p -m 644 src/*.ads $(DESTDIR)/adainclude/
 	install -p -m 644 src/*.shs $(DESTDIR)/adainclude/
-	install -p -m 644 build/sparkunit.gpr $(DESTDIR)/
+	install -p -m 644 build/SPARKUnit.gpr $(DESTDIR)/
 
 install_local: DESTDIR = $(OUTPUT_DIR)/sparkunit
 install_local: install
