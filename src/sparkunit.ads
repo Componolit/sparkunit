@@ -15,7 +15,7 @@ is
    type Harness_Type is array (Natural range <>) of Element_Type;
 
    -- Maximum length of strings passed to SPARKUnit
-   String_Length : constant := 30;
+   String_Length : constant := 50;
 
    -- Create the given @Harness@ using @Description@
    procedure Create_Harness
@@ -60,7 +60,7 @@ is
    procedure Text_Report
       (Harness : in Harness_Type);
    --# global
-   --#    Spark_IO.Outputs;
+   --#    in out Spark_IO.Outputs;
    --# derives
    --#    Spark_IO.Outputs from *, Harness;
 
