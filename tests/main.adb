@@ -15,6 +15,8 @@ is
 
    My_Harness             : My_Harness_Type;
    Suite1, Suite2, Suite3 : SPARKUnit.Index_Type;
+   M1                     : SPARKUnit.Measurement_Type;
+
 begin
    SPARKUnit.Create_Harness (My_Harness, "My harness");
 
@@ -29,6 +31,25 @@ begin
 
    SPARKUnit.Create_Suite (My_Harness, "My third suite", Suite3);
    SPARKUnit.Create_Test (My_Harness, Suite3, "My sixth test", False);
+
+   SPARKUnit.Reference_Start (M1);
+   --# accept Flow, 10, "Delay loop";
+   for I in Natural range 1 .. 1000
+   loop
+      null;
+   end loop;
+   SPARKUnit.Reference_Stop (M1);
+
+   SPARKUnit.Measurement_Start (M1);
+   --# accept Flow, 10, "Delay loop";
+   for I in Natural range 1 .. 10000
+   loop
+      null;
+   end loop;
+   SPARKUnit.Measurement_Stop (M1);
+
+   SPARKUnit.Create_Benchmark (My_Harness, Suite3, "My benchmark", M1, True);
+   SPARKUnit.Create_Benchmark (My_Harness, Suite3, "Failed benchmark", M1, False);
 
    SPARKUnit.Text_Report (My_Harness);
 end Main;

@@ -134,8 +134,8 @@ is
       Harness (Harness'First).Data  :=
           Test_Type'(Description => Copy (Description),
                      Kind        => Harness_Kind,
-                     Success     => True);
-
+                     Success     => True,
+                     Performance => 0);
    end Create_Harness;
 
    ----------------------------------------------------------------------------
@@ -153,7 +153,8 @@ is
           Current  => Suite,
           Data     => Test_Type'(Description => Copy (Description),
                                  Kind        => Suite_Kind,
-                                 Success     => True));
+                                 Success     => True,
+                                 Performance => 0));
    end Create_Suite;
 
    ----------------------------------------------------------------------------
@@ -174,10 +175,61 @@ is
           Current  => Dummy,
           Data     => Test_Type'(Description => Copy (Description),
                                  Kind        => Test_Kind,
-                                 Success     => Success));
+                                 Success     => Success,
+                                 Performance => 0));
 
    --# accept Flow, 33, Dummy, "Unused";
    end Create_Test;
+
+   ----------------------------------------------------------------------------
+
+   function Calculate_Performance
+      (Measurement : Measurement_Type) return Natural
+   is
+      --# hide Calculate_Performance;
+      use Ada.Real_Time;
+
+      D1, D2 : Time_Span;
+      Result : Natural;
+   begin
+      D1 := Measurement.Reference_Stop   - Measurement.Reference_Start;
+      D2 := Measurement.Measurement_Stop - Measurement.Measurement_Start;
+
+      if D2 > Time_Span_Zero then
+         Result := Time_Span (100 * D1) / D2;
+      else
+         Result := 0;
+      end if;
+
+      return Result;
+
+   end Calculate_Performance;
+
+   ----------------------------------------------------------------------------
+
+   procedure Create_Benchmark
+      (Harness     : in out Harness_Type;
+       Suite       : in     Index_Type;
+       Description : in     String;
+       Measurement : in     Measurement_Type;
+       Success     : in     Boolean)
+   is
+      Dummy       : Index_Type;
+   begin
+
+      --# accept Flow, 10, Dummy, "Unused";
+      Insert_After
+         (Harness  => Harness,
+          Previous => Suite,
+          Current  => Dummy,
+          Data     => Test_Type'
+                         (Description => Copy (Description),
+                          Kind        => Benchmark_Kind,
+                          Performance => Calculate_Performance (Measurement),
+                          Success     => Success));
+
+   --# accept Flow, 33, Dummy, "Unused";
+   end Create_Benchmark;
 
    ----------------------------------------------------------------------------
 
@@ -196,7 +248,7 @@ is
          when Suite_Kind =>
             Spark_IO.New_Line (Spark_IO.Standard_Output, 1);
             Spark_IO.Put_String (Spark_IO.Standard_Output, "   ", 0);
-         when Test_Kind =>
+         when Test_Kind | Benchmark_Kind =>
             Spark_IO.Put_String (Spark_IO.Standard_Output, "      ", 0);
       end case;
    end Indent;
@@ -221,6 +273,13 @@ is
 
       if Item.Success then
          Spark_IO.Put_String (Spark_IO.Standard_Output, ".... OK.", 0);
+
+         if Item.Kind = Benchmark_Kind then
+            Spark_IO.Put_String (Spark_IO.Standard_Output, " (", 0);
+            Spark_IO.Put_Integer (Spark_IO.Standard_Output, Item.Performance, 3, 10);
+            Spark_IO.Put_String (Spark_IO.Standard_Output, "%)", 0);
+         end if;
+
       else
          Spark_IO.Put_String (Spark_IO.Standard_Output, " FAILED!", 0);
       end if;
@@ -255,7 +314,7 @@ is
                 Item => Temp.Data.Description.Data,
                 Stop => Temp.Data.Description.Length);
 
-            if Temp.Data.Kind = Test_Kind then
+            if Temp.Data.Kind = Test_Kind or Temp.Data.Kind = Benchmark_Kind then
 
                if    not (No_Test < Natural'Last) then
                   Spark_IO.Put_String (Spark_IO.Standard_Output, " NO_TEST OVERFLOW!!!", 0);
@@ -306,5 +365,45 @@ is
       Ada.Command_Line.Set_Exit_Status (Status);
 
    end Text_Report;
+
+   ----------------------------------------------------------------------------
+
+   procedure Reference_Start
+      (Item : out Measurement_Type)
+   is
+   begin
+      Item := Measurement_Type'
+         (Reference_Start   => Ada.Real_Time.Clock,
+          Reference_Stop    => Ada.Real_Time.Time_First,
+          Measurement_Start => Ada.Real_Time.Time_First,
+          Measurement_Stop  => Ada.Real_Time.Time_First);
+   end Reference_Start;
+
+   ----------------------------------------------------------------------------
+
+   procedure Reference_Stop
+      (Item : in out Measurement_Type)
+   is
+   begin
+      Item.Reference_Stop := Ada.Real_Time.Clock;
+   end Reference_Stop;
+
+   ----------------------------------------------------------------------------
+
+   procedure Measurement_Start
+      (Item : in out Measurement_Type)
+   is
+   begin
+      Item.Measurement_Start := Ada.Real_Time.Clock;
+   end Measurement_Start;
+
+   ----------------------------------------------------------------------------
+
+   procedure Measurement_Stop
+      (Item : in out Measurement_Type)
+   is
+   begin
+      Item.Measurement_Stop := Ada.Real_Time.Clock;
+   end Measurement_Stop;
 
 end SPARKUnit;

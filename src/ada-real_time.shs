@@ -1,0 +1,10 @@
+package Ada.Real_Time
+is
+   type Time is private;
+   Time_First : constant Time;
+
+   function Clock return Time;
+
+private
+   --# hide Ada.Real_Time;
+end Ada.Real_Time;

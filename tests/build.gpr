@@ -1,4 +1,4 @@
-with "sparkunit";
+with "SPARKUnit";
 
 project Build
 is
