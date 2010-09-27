@@ -65,6 +65,8 @@ is
    --  @Suite@ in @Harness@.
    --  Use @Description@ for the measurement.
 
+   --  Insert benchmark with result @Success@ and @Measurment@ as child of
+   --  @Suite@ in @Harness@. Use @Description@ for the benchmark.
    procedure Create_Benchmark
       (Harness     : in out Harness_Type;
        Suite       : in     Index_Type;
