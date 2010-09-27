@@ -347,9 +347,9 @@ is
 
          Spark_IO.New_Line (Spark_IO.Standard_Output, 1);
          Spark_IO.Put_String (Spark_IO.Standard_Output, "FAILED: ", 0);
-         Spark_IO.Put_Integer (Spark_IO.Standard_Output, No_Fail, 4, 10);
-         Spark_IO.Put_String (Spark_IO.Standard_Output, " /", 0);
-         Spark_IO.Put_Integer (Spark_IO.Standard_Output, No_Test, 4, 10);
+         Spark_IO.Put_Integer (Spark_IO.Standard_Output, No_Fail, 0, 10);
+         Spark_IO.Put_String (Spark_IO.Standard_Output, "/", 0);
+         Spark_IO.Put_Integer (Spark_IO.Standard_Output, No_Test, 0, 10);
          Spark_IO.New_Line (Spark_IO.Standard_Output, 1);
 
       end if;
