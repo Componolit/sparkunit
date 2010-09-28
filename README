@@ -6,10 +6,10 @@ SPARKUnit - A unit test framework for the SPARK programming language
 *I have only proved it correct, not tried it.*
 (Donald E. Knuth)
 
-------------------------------------------------------------------------------
+----------------------------------------------
 
 SPARKUnit is a unit test framework for the SPARK programming language [1]_. It
-enables the developer to create unit tests in SPARK which can be analysed with
+enables the developer to create unit tests in SPARK which can be analysed by
 the SPARK Examiner. This allows testing of SPARK operations with preconditions
 and flow analysis of test cases.
 
