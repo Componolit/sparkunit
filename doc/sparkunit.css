@@ -1,0 +1,118 @@
+body
+{
+   background-color: #e8eaec;
+   font:             86% Verdana,Tahoma,Arial,sans-serif;
+   line-height:      1.4em;
+   text-align:       justify;
+   min-width:        350px;
+}
+
+a
+{
+   color:            #467aa7;
+   font-weight:      bold;
+   text-decoration:  none;
+   background-color: inherit;
+}
+
+a:hover
+{
+   color:            #2a5a8a;
+   text-decoration:  none;
+   background-color: inherit;
+}
+
+a img
+{
+   border:           none;
+}
+
+div.document
+{
+   background-color: #ffffff;
+
+   margin-top:     1%;
+   margin-left:   10%;
+   margin-right:  10%;
+   margin-bottom:  5%;
+
+   padding:       2%;
+
+   border-width: 2px;
+   border-style: solid;
+   border-color: #a0a0a0;
+}
+
+h1, h3.subtitle
+{
+   display:          block;
+   margin:           20px 0 16px 0;
+   padding:          0 0 3px 0;
+   font-size:        1.7em;
+   font-weight:      normal;
+   line-height:      100%;
+   letter-spacing:   -1px;
+   color:            #505050;
+   background-color: inherit;
+   text-align:       left;
+   border-bottom:    1px solid #d1d1d1;
+}
+
+table.footer
+{
+   color:               white;
+   font-size:           1em;
+   background-color:    #215797;
+   padding:             20px;
+   margin:              0;
+
+   border-width:        2px;
+   border-style:        solid;
+   border-color:        #a0a0a0;
+
+   text-align:          right;
+   text-shadow:         #505050 2px 2px 1px;
+}
+
+h2
+{
+   color:            #505050;
+   font-size:        1.4em;
+   font-weight:      normal;
+   letter-spacing:   -1px;
+}
+
+table.docutils, td, th.head
+{
+   border:           none;
+}
+
+table.footnote
+{
+   padding:          0px;
+}
+
+hr
+{
+   border:           none;
+}
+
+h1.title, table.title
+{
+   color:               white;
+   font-size:           1.7em;
+   background-image:    url(lsc_logo.png);
+   background-position: 98% 78%;
+   background-repeat:   no-repeat;
+   background-color:    #215797;
+   padding:             20px;
+   height:              80px;
+   margin:              0 0 30px 0;
+
+   border-width:        2px;
+   border-style:        solid;
+   border-color:        #a0a0a0;
+
+   text-shadow:         #505050 2px 2px 1px;
+}
+

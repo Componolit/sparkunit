@@ -25,6 +25,12 @@ SPARKMAKE_OPTS = \
    -include=\*.ad[sb] \
    -dir=$(SPARK_DIR)/lib/spark
 
+RST2HTML_OPTS = \
+   --generator \
+   --date \
+   --time \
+   --stylesheet=doc/sparkunit.css
+
 # SPARK_DIR must be set
 ifeq ($(SPARK_DIR),)
 $(error SPARK_DIR not defined)
@@ -95,6 +101,11 @@ apidoc: $(ADT_FILES)
 	echo $^ | xargs -n1 > $(OUTPUT_DIR)/tree.lst
 	adabrowse -T $(TREE_DIR) -f @$(OUTPUT_DIR)/tree.lst -w1 -c doc/adabrowse.conf -o $(DOC_DIR)/
 	install -m 644 doc/apidoc.css $(DOC_DIR)/
+
+doc: apidoc
+	rst2html $(RST2HTML_OPTS) README $(OUTPUT_DIR)/doc/index.html
+	rst2html $(RST2HTML_OPTS) CHANGES $(OUTPUT_DIR)/doc/CHANGES.html
+	rst2html $(RST2HTML_OPTS) TODO $(OUTPUT_DIR)/doc/TODO.html
 
 clean:
 	$(MAKE) -C tests clean
