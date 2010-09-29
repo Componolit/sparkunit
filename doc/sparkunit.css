@@ -1,6 +1,7 @@
 body
 {
-   background-color: #e8eaec;
+   color:            #828282;
+   background-color: #a0a0a0;
    font:             86% Verdana,Tahoma,Arial,sans-serif;
    line-height:      1.4em;
    text-align:       justify;
@@ -9,7 +10,7 @@ body
 
 a
 {
-   color:            #467aa7;
+   color:            #b8a448;
    font-weight:      bold;
    text-decoration:  none;
    background-color: inherit;
@@ -17,7 +18,7 @@ a
 
 a:hover
 {
-   color:            #2a5a8a;
+   color:            #385900;
    text-decoration:  none;
    background-color: inherit;
 }
@@ -29,7 +30,7 @@ a img
 
 div.document
 {
-   background-color: #ffffff;
+   background-color: #efefef;
 
    margin-top:     1%;
    margin-left:   10%;
@@ -40,7 +41,7 @@ div.document
 
    border-width: 2px;
    border-style: solid;
-   border-color: #a0a0a0;
+   border-color: white;
 }
 
 h1, h3.subtitle
@@ -52,23 +53,23 @@ h1, h3.subtitle
    font-weight:      normal;
    line-height:      100%;
    letter-spacing:   -1px;
-   color:            #505050;
+   color:            #385900;
    background-color: inherit;
    text-align:       left;
-   border-bottom:    1px solid #d1d1d1;
+   border-bottom:    1px solid #385900;
 }
 
 table.footer
 {
    color:               white;
    font-size:           1em;
-   background-color:    #215797;
+   background-color:    #a6db11;
    padding:             20px;
    margin:              0;
 
    border-width:        2px;
    border-style:        solid;
-   border-color:        #a0a0a0;
+   border-color:        white;
 
    text-align:          right;
    text-shadow:         #505050 2px 2px 1px;
@@ -99,20 +100,20 @@ hr
 
 h1.title, table.title
 {
-   color:               white;
+   color:               #0c1001;
    font-size:           1.7em;
-   background-image:    url(lsc_logo.png);
+   background-image:    url(sparkunit_logo.png);
    background-position: 98% 78%;
    background-repeat:   no-repeat;
-   background-color:    #215797;
+   background-color:    #a5da10;
    padding:             20px;
    height:              80px;
    margin:              0 0 30px 0;
 
    border-width:        2px;
    border-style:        solid;
-   border-color:        #a0a0a0;
+   border-color:        white;
 
-   text-shadow:         #505050 2px 2px 1px;
+   text-shadow:         #828282 2px 2px 1px;
 }
 
