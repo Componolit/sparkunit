@@ -2,8 +2,7 @@
 SPARKUnit - A unit test framework for the SPARK programming language
 ====================================================================
 
-*Beware of bugs in the above code;*
-*I have only proved it correct, not tried it.*
+*Beware of bugs in the above code; I have only proved it correct, not tried it.*
 (Donald E. Knuth)
 
 ----------------------------------------------
