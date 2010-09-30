@@ -5,6 +5,9 @@ DOC_DIR     = $(OUTPUT_DIR)/doc
 BUILD_DIR   = $(OUTPUT_DIR)/build
 TARGET_CFG ?= $(OUTPUT_DIR)/target.cfg
 
+VERSION     ?= 0.1.0
+TAG         ?= v$(VERSION)
+
 DUMMY      := $(shell mkdir -p $(OUTPUT_DIR) $(PROOF_DIR) $(TREE_DIR) $(DOC_DIR))
 ADT_FILES   = $(addprefix $(OUTPUT_DIR)/tree/,$(notdir $(patsubst %.ads,%.adt,$(wildcard src/*.ads))))
 
@@ -96,6 +99,11 @@ $(OUTPUT_DIR)/target.cfg: $(OUTPUT_DIR)/confgen
 
 $(TREE_DIR)/%.adt: $(CURDIR)/src/%.ads
 	(cd $(OUTPUT_DIR)/tree && gcc -c -gnatc -gnatt $^)
+
+archive: $(OUTPUT_DIR)/doc/SPARKUnit-$(VERSION).tgz
+
+$(OUTPUT_DIR)/doc/SPARKUnit-$(VERSION).tgz:
+	git archive --format tar --prefix libsparkcrypto-$(VERSION)/ $(TAG) | gzip -c > $@
 
 apidoc: $(ADT_FILES)
 	echo $^ | xargs -n1 > $(OUTPUT_DIR)/tree.lst
