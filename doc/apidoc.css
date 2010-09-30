@@ -1,11 +1,10 @@
 body
 {
-   background-color: #e8eaec;
+   color:            black;
+   background-color: #efefef;
    font:             86% Verdana,Tahoma,Arial,sans-serif;
    line-height:      1.4em;
    text-align:       justify;
-
-   background-color: #ffffff;
 
    margin-top:        1%;
    margin-left:      10%;
@@ -16,14 +15,14 @@ body
 
    border-width:     2px;
    border-style:     solid;
-   border-color:     #a0a0a0;
+   border-color:     white;
 
    min-width:        350px;
 }
 
 a
 {
-   color:            #467aa7;
+   color:            #b8a448;
    font-weight:      bold;
    text-decoration:  none;
    background-color: inherit;
@@ -31,7 +30,7 @@ a
 
 a:hover
 {
-   color:            #2a5a8a;
+   color:            #385900;
    text-decoration:  none;
    background-color: inherit;
 }
@@ -50,10 +49,10 @@ h3.subtitle
    font-weight:      normal;
    line-height:      100%;
    letter-spacing:   -1px;
-   color:            #505050;
+   color:            #385900;
    background-color: inherit;
    text-align:       left;
-   border-bottom:    1px solid #d1d1d1;
+   border-bottom:    1px solid #385900;
 }
 
 table
@@ -69,39 +68,40 @@ hr
 
 h2
 {
-   color:               white;
-   font-size:           1.7em;
-   text-shadow:         #505050 2px 2px 1px;
+   color:            #385900;
+   font-size:        1.7em;
+   text-shadow:      #385900 2px 2px 1px;
 }
 
 table.title
 {
-   background-image:    url(lsc_logo.png);
+   color:               #0c1001;
    background-position: 98% 78%;
    background-repeat:   no-repeat;
-   background-color:    #fb8a6c;
+   background-color:    #a5da10;
    padding:             20px;
    height:              80px;
    margin:              0;
    border-width:        2px;
    border-style:        solid;
-   border-color:        #fb3500;
+   border-color:        white;
+   text-shadow:         #828282 2px 2px 1px;
 }
 
 table.footer
 {
-   color:               white;
+   color:               #0c1001;
    font-size:           1em;
-   background-color:    #fb8a6c;
+   background-color:    #a5da10;
    padding:             20px;
    margin:              0;
 
    border-width:        2px;
    border-style:        solid;
-   border-color:        #fb3500;
+   border-color:        white;
 
    text-align:          right;
-   text-shadow:         #505050 2px 2px 1px;
+   text-shadow:         #828282 2px 2px 1px;
 }
 
 td
@@ -120,9 +120,9 @@ td.odd
 td.code, td.definition
 {
    margin-top:       20px;
-   border-top:       1px solid #fb3500;
+   border-top:       1px solid #385900;
    padding:          4px;
-   background:       #fbbaa8;
+   background-color: #a6db11;
 }
 
 td.type
@@ -134,5 +134,5 @@ td.type
 
 pre.spark
 {
-   color: #81f181;
+   color: black;
 }
