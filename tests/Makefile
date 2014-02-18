@@ -24,7 +24,6 @@ SPARKMAKE_OPTS = \
       -include=\*.shs \
       -include=\*.ad[sb] \
       -nometa \
-      -duplicates_are_errors \
       -index=$(OUTPUT_DIR)/spark.idx \
       -dir=$(SPARK_DIR)/lib/spark \
       -dir=$(SPARKUNIT_DIR)

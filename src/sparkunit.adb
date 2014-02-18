@@ -31,7 +31,7 @@
 -- POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
-with Spark_IO;
+with SPARK_IO;
 with Ada.Command_Line;
 
 package body SPARKUnit
@@ -229,7 +229,7 @@ is
       D2 := Measurement.Measurement_Stop - Measurement.Measurement_Start;
 
       if D2 > Time_Span_Zero then
-         Result := Time_Span (100 * D1) / D2;
+         Result := 100 * D1 / D2;
       else
          Result := 0;
       end if;
@@ -268,21 +268,21 @@ is
 
    procedure Indent (Kind : Kind_Type)
    --# global
-   --#    Spark_IO.Outputs;
+   --#    SPARK_IO.Outputs;
    --# derives
-   --#    Spark_IO.Outputs from *, Kind;
+   --#    SPARK_IO.Outputs from *, Kind;
    is
    begin
       case Kind is
          when Invalid =>
-            Spark_IO.Put_String (Spark_IO.Standard_Output, "ERROR: Invalid kind", 0);
+            SPARK_IO.Put_String (SPARK_IO.Standard_Output, "ERROR: Invalid kind", 0);
          when Harness_Kind =>
             null;
          when Suite_Kind =>
-            Spark_IO.New_Line (Spark_IO.Standard_Output, 1);
-            Spark_IO.Put_String (Spark_IO.Standard_Output, "   ", 0);
+            SPARK_IO.New_Line (SPARK_IO.Standard_Output, 1);
+            SPARK_IO.Put_String (SPARK_IO.Standard_Output, "   ", 0);
          when Test_Kind | Benchmark_Kind =>
-            Spark_IO.Put_String (Spark_IO.Standard_Output, "      ", 0);
+            SPARK_IO.Put_String (SPARK_IO.Standard_Output, "      ", 0);
       end case;
    end Indent;
 
@@ -290,31 +290,31 @@ is
 
    procedure Print_Result (Item : Test_Type)
    --# global
-   --#    Spark_IO.Outputs;
+   --#    SPARK_IO.Outputs;
    --# derives
-   --#    Spark_IO.Outputs from *, Item;
+   --#    SPARK_IO.Outputs from *, Item;
    --# pre
    --#    String_Length - Item.Description.Length <= Natural'Last;
    is
    begin
 
-      Spark_IO.Put_Char (Spark_IO.Standard_Output, ' ');
+      SPARK_IO.Put_Char (SPARK_IO.Standard_Output, ' ');
       for I in Natural range 1 .. String_Length - Item.Description.Length
       loop
-         Spark_IO.Put_Char (Spark_IO.Standard_Output, '.');
+         SPARK_IO.Put_Char (SPARK_IO.Standard_Output, '.');
       end loop;
 
       if Item.Success then
-         Spark_IO.Put_String (Spark_IO.Standard_Output, ".... OK.", 0);
+         SPARK_IO.Put_String (SPARK_IO.Standard_Output, ".... OK.", 0);
 
          if Item.Kind = Benchmark_Kind then
-            Spark_IO.Put_String (Spark_IO.Standard_Output, " (", 0);
-            Spark_IO.Put_Integer (Spark_IO.Standard_Output, Item.Performance, 3, 10);
-            Spark_IO.Put_String (Spark_IO.Standard_Output, "%)", 0);
+            SPARK_IO.Put_String (SPARK_IO.Standard_Output, " (", 0);
+            SPARK_IO.Put_Integer (SPARK_IO.Standard_Output, Item.Performance, 3, 10);
+            SPARK_IO.Put_String (SPARK_IO.Standard_Output, "%)", 0);
          end if;
 
       else
-         Spark_IO.Put_String (Spark_IO.Standard_Output, " FAILED!", 0);
+         SPARK_IO.Put_String (SPARK_IO.Standard_Output, " FAILED!", 0);
       end if;
 
    end Print_Result;
@@ -333,7 +333,7 @@ is
    begin
 
       if Failure (Harness) then
-         Spark_IO.Put_Line (Spark_IO.Standard_Output, "OUT OF MEMORY!!!", 0);
+         SPARK_IO.Put_Line (SPARK_IO.Standard_Output, "OUT OF MEMORY!!!", 0);
          Error := True;
       else
 
@@ -342,18 +342,18 @@ is
          loop
             Indent (Temp.Data.Kind);
 
-            Spark_IO.Put_String
-               (File => Spark_IO.Standard_Output,
+            SPARK_IO.Put_String
+               (File => SPARK_IO.Standard_Output,
                 Item => Temp.Data.Description.Data,
                 Stop => Temp.Data.Description.Length);
 
             if Temp.Data.Kind = Test_Kind or Temp.Data.Kind = Benchmark_Kind then
 
                if    not (No_Test < Natural'Last) then
-                  Spark_IO.Put_String (Spark_IO.Standard_Output, " NO_TEST OVERFLOW!!!", 0);
+                  SPARK_IO.Put_String (SPARK_IO.Standard_Output, " NO_TEST OVERFLOW!!!", 0);
                   Error := True;
                elsif not (No_Fail < Natural'Last) then
-                  Spark_IO.Put_String (Spark_IO.Standard_Output, " NO_FAIL OVERFLOW!!!", 0);
+                  SPARK_IO.Put_String (SPARK_IO.Standard_Output, " NO_FAIL OVERFLOW!!!", 0);
                   Error := True;
                else
                   No_Test := No_Test + 1;
@@ -366,11 +366,11 @@ is
 
             if not (Temp.Next.Position in Harness'Range)
             then
-               Spark_IO.Put_String (Spark_IO.Standard_Output, "INVALID NEXT ELEMENT!!!", 0);
+               SPARK_IO.Put_String (SPARK_IO.Standard_Output, "INVALID NEXT ELEMENT!!!", 0);
                Error := True;
             end if;
 
-            Spark_IO.New_Line (Spark_IO.Standard_Output, 1);
+            SPARK_IO.New_Line (SPARK_IO.Standard_Output, 1);
 
             exit when Error or Temp.Next.Position = Harness'First;
 
@@ -378,12 +378,12 @@ is
 
          end loop;
 
-         Spark_IO.New_Line (Spark_IO.Standard_Output, 1);
-         Spark_IO.Put_String (Spark_IO.Standard_Output, "FAILED: ", 0);
-         Spark_IO.Put_Integer (Spark_IO.Standard_Output, No_Fail, 0, 10);
-         Spark_IO.Put_String (Spark_IO.Standard_Output, "/", 0);
-         Spark_IO.Put_Integer (Spark_IO.Standard_Output, No_Test, 0, 10);
-         Spark_IO.New_Line (Spark_IO.Standard_Output, 1);
+         SPARK_IO.New_Line (SPARK_IO.Standard_Output, 1);
+         SPARK_IO.Put_String (SPARK_IO.Standard_Output, "FAILED: ", 0);
+         SPARK_IO.Put_Integer (SPARK_IO.Standard_Output, No_Fail, 0, 10);
+         SPARK_IO.Put_String (SPARK_IO.Standard_Output, "/", 0);
+         SPARK_IO.Put_Integer (SPARK_IO.Standard_Output, No_Test, 0, 10);
+         SPARK_IO.New_Line (SPARK_IO.Standard_Output, 1);
 
       end if;
 

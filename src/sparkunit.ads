@@ -36,7 +36,7 @@ with Ada.Real_Time;
 --# inherit
 --#    Ada.Command_Line,
 --#    Ada.Real_Time,
---#    Spark_IO;
+--#    SPARK_IO;
 
 -------------------------------------------------------------------------------
 -- The SPARKUnit unit testing framework
@@ -120,9 +120,9 @@ is
    procedure Text_Report
       (Harness : in Harness_Type);
    --# global
-   --#    in out Spark_IO.Outputs;
+   --#    in out SPARK_IO.Outputs;
    --# derives
-   --#    Spark_IO.Outputs from *, Harness;
+   --#    SPARK_IO.Outputs from *, Harness;
 
    --  Start a reference measurement using the context @Item@
    procedure Reference_Start
