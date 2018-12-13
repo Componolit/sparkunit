@@ -275,14 +275,14 @@ is
    begin
       case Kind is
          when Invalid =>
-            SPARK_IO.Put_String (SPARK_IO.Standard_Output, "ERROR: Invalid kind", 0);
+            SPARK_IO.Put_String ("ERROR: Invalid kind", 0);
          when Harness_Kind =>
             null;
          when Suite_Kind =>
-            SPARK_IO.New_Line (SPARK_IO.Standard_Output, 1);
-            SPARK_IO.Put_String (SPARK_IO.Standard_Output, "   ", 0);
+            SPARK_IO.New_Line (1);
+            SPARK_IO.Put_String ("   ", 0);
          when Test_Kind | Benchmark_Kind =>
-            SPARK_IO.Put_String (SPARK_IO.Standard_Output, "      ", 0);
+            SPARK_IO.Put_String ("      ", 0);
       end case;
    end Indent;
 
@@ -298,23 +298,23 @@ is
    is
    begin
 
-      SPARK_IO.Put_Char (SPARK_IO.Standard_Output, ' ');
+      SPARK_IO.Put_Char (' ');
       for I in Natural range 1 .. String_Length - Item.Description.Length
       loop
-         SPARK_IO.Put_Char (SPARK_IO.Standard_Output, '.');
+         SPARK_IO.Put_Char ('.');
       end loop;
 
       if Item.Success then
-         SPARK_IO.Put_String (SPARK_IO.Standard_Output, ".... OK.", 0);
+         SPARK_IO.Put_String (".... OK.", 0);
 
          if Item.Kind = Benchmark_Kind then
-            SPARK_IO.Put_String (SPARK_IO.Standard_Output, " (", 0);
-            SPARK_IO.Put_Integer (SPARK_IO.Standard_Output, Item.Performance, 3, 10);
-            SPARK_IO.Put_String (SPARK_IO.Standard_Output, "%)", 0);
+            SPARK_IO.Put_String (" (", 0);
+            SPARK_IO.Put_Integer (Item.Performance);
+            SPARK_IO.Put_String ("%)", 0);
          end if;
 
       else
-         SPARK_IO.Put_String (SPARK_IO.Standard_Output, " FAILED!", 0);
+         SPARK_IO.Put_String (" FAILED!", 0);
       end if;
 
    end Print_Result;
@@ -333,7 +333,7 @@ is
    begin
 
       if Failure (Harness) then
-         SPARK_IO.Put_Line (SPARK_IO.Standard_Output, "OUT OF MEMORY!!!", 0);
+         SPARK_IO.Put_Line ("OUT OF MEMORY!!!", 0);
          Error := True;
       else
 
@@ -343,17 +343,16 @@ is
             Indent (Temp.Data.Kind);
 
             SPARK_IO.Put_String
-               (File => SPARK_IO.Standard_Output,
-                Item => Temp.Data.Description.Data,
+               (Item => Temp.Data.Description.Data,
                 Stop => Temp.Data.Description.Length);
 
             if Temp.Data.Kind = Test_Kind or Temp.Data.Kind = Benchmark_Kind then
 
                if    not (No_Test < Natural'Last) then
-                  SPARK_IO.Put_String (SPARK_IO.Standard_Output, " NO_TEST OVERFLOW!!!", 0);
+                  SPARK_IO.Put_String (" NO_TEST OVERFLOW!!!", 0);
                   Error := True;
                elsif not (No_Fail < Natural'Last) then
-                  SPARK_IO.Put_String (SPARK_IO.Standard_Output, " NO_FAIL OVERFLOW!!!", 0);
+                  SPARK_IO.Put_String (" NO_FAIL OVERFLOW!!!", 0);
                   Error := True;
                else
                   No_Test := No_Test + 1;
@@ -366,11 +365,11 @@ is
 
             if not (Temp.Next.Position in Harness'Range)
             then
-               SPARK_IO.Put_String (SPARK_IO.Standard_Output, "INVALID NEXT ELEMENT!!!", 0);
+               SPARK_IO.Put_String ("INVALID NEXT ELEMENT!!!", 0);
                Error := True;
             end if;
 
-            SPARK_IO.New_Line (SPARK_IO.Standard_Output, 1);
+            SPARK_IO.New_Line (1);
 
             exit when Error or Temp.Next.Position = Harness'First;
 
@@ -378,12 +377,12 @@ is
 
          end loop;
 
-         SPARK_IO.New_Line (SPARK_IO.Standard_Output, 1);
-         SPARK_IO.Put_String (SPARK_IO.Standard_Output, "FAILED: ", 0);
-         SPARK_IO.Put_Integer (SPARK_IO.Standard_Output, No_Fail, 0, 10);
-         SPARK_IO.Put_String (SPARK_IO.Standard_Output, "/", 0);
-         SPARK_IO.Put_Integer (SPARK_IO.Standard_Output, No_Test, 0, 10);
-         SPARK_IO.New_Line (SPARK_IO.Standard_Output, 1);
+         SPARK_IO.New_Line (1);
+         SPARK_IO.Put_String ("FAILED: ", 0);
+         SPARK_IO.Put_Integer (No_Fail);
+         SPARK_IO.Put_String ("/", 0);
+         SPARK_IO.Put_Integer (No_Test);
+         SPARK_IO.New_Line (1);
 
       end if;
 
