@@ -222,14 +222,14 @@ is
       --# hide Calculate_Performance;
       use Ada.Real_Time;
 
-      D1, D2 : Time_Span;
+      D1, D2 : Duration;
       Result : Natural;
    begin
-      D1 := Measurement.Reference_Stop   - Measurement.Reference_Start;
-      D2 := Measurement.Measurement_Stop - Measurement.Measurement_Start;
+      D1 := To_Duration (Measurement.Reference_Stop   - Measurement.Reference_Start);
+      D2 := To_Duration (Measurement.Measurement_Stop - Measurement.Measurement_Start);
 
-      if D2 > Time_Span_Zero then
-         Result := 100 * D1 / D2;
+      if D1 > 0.0001 and D2 > 0.0001 then
+         Result := Natural (100 * D1 / D2);
       else
          Result := 0;
       end if;
