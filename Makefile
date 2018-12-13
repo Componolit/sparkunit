@@ -20,11 +20,6 @@ ifeq ($(NO_TESTS),)
 ALL_GOALS += test
 endif
 
-# Feature: NO_APIDOC
-ifeq ($(NO_APIDOC),)
-ALL_GOALS += apidoc
-endif
-
 ALL_GOALS += install_local
 
 
@@ -57,12 +52,7 @@ archive: $(OUTPUT_DIR)/doc/SPARKUnit-$(VERSION).tgz
 $(OUTPUT_DIR)/doc/SPARKUnit-$(VERSION).tgz:
 	git archive --format tar --prefix libsparkcrypto-$(VERSION)/ $(TAG) | gzip -c > $@
 
-apidoc: $(ADT_FILES)
-	echo $^ | xargs -n1 > $(OUTPUT_DIR)/tree.lst
-	adabrowse -T $(TREE_DIR) -f @$(OUTPUT_DIR)/tree.lst -w1 -c doc/adabrowse.conf -o $(DOC_DIR)/
-	install -m 644 doc/apidoc.css $(DOC_DIR)/
-
-doc: apidoc
+doc:
 	rst2html $(RST2HTML_OPTS) README $(OUTPUT_DIR)/doc/index.html
 	rst2html $(RST2HTML_OPTS) CHANGES $(OUTPUT_DIR)/doc/CHANGES.html
 	rst2html $(RST2HTML_OPTS) TODO $(OUTPUT_DIR)/doc/TODO.html
@@ -71,4 +61,4 @@ clean:
 	$(MAKE) -C tests clean
 	rm -rf $(PROOF_DIR) $(TREE_DIR) $(OUTPUT_DIR)
 
-.PHONY: clean apidoc all install build install_local
+.PHONY: clean all install build install_local

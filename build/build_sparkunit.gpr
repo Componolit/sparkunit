@@ -1,7 +1,5 @@
 project Build_SPARKUnit
 is
-   SPARK_DIR := external ("SPARK_DIR");
-
    for Library_Name     use "sparkunit";
    for Library_Kind     use "static";
    for Library_Dir      use "../out/build/adalib";
