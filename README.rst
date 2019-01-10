@@ -1,3 +1,7 @@
+THIS CODE BASE IS NOT MAINTAINED ANYMORE AND KEPT FOR HISTORICAL REFERENCE
+ONLY. THE LIBRARY WAS DEVELOPED IN SPARK 2005, WHEREAS OTHER TEST FRAMEWORKS
+LIKE AUnit CAN BE USED WITH THE CURRENT SPARK 2014 LANGUAGE VERSION.
+
 ====================================================================
 SPARKUnit - A unit test framework for the SPARK programming language
 ====================================================================
